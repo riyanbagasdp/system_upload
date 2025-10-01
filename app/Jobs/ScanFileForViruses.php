@@ -11,7 +11,7 @@ use Illuminate\Queue\SerializesModels;
 
 class ScanFileForViruses implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, Queueable, InteractsWithQueue, SerializesModels;
 
     public TaskAttachment $attachment;
 
@@ -25,9 +25,9 @@ class ScanFileForViruses implements ShouldQueue
         // Simulasi scanning (delay 2 detik)
         sleep(2);
 
-        // Misalnya kita simpan hasil scan ke kolom baru `is_clean`
+        // Update status file -> dianggap bersih
         $this->attachment->update([
-            'is_clean' => true // default dianggap aman
+            'is_clean' => true
         ]);
     }
 }

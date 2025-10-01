@@ -5,15 +5,16 @@ namespace App\Jobs;
 use App\Models\Task;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable; // ⬅️ WAJIB
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
 class BulkUpdateTaskStatus implements ShouldQueue
 {
-    use Queueable, InteractsWithQueue, SerializesModels;
+    use Dispatchable, Queueable, InteractsWithQueue, SerializesModels;
 
-    public $taskIds;
-    public $status;
+    public array $taskIds;
+    public string $status;
 
     public function __construct(array $taskIds, string $status)
     {

@@ -12,18 +12,18 @@ use Illuminate\Support\Facades\Storage;
 
 class ExportTasksJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, Queueable, InteractsWithQueue, SerializesModels;
 
     public string $fileName;
 
-    public function __construct(string $fileName = null)
+    public function __construct(?string $fileName = null)
     {
         $this->fileName = $fileName ?? 'tasks_export_' . now()->format('Ymd_His') . '.csv';
     }
 
     public function handle(): void
     {
-        $tasks = Task::with(['creator', 'assignee'])->get();
+        $tasks = Task::with(['creator', 'assignedUser'])->get();
 
         $csvData = [];
         $csvData[] = ['ID', 'Title', 'Status', 'Priority', 'Due Date', 'Assigned User', 'Created By'];
@@ -40,13 +40,11 @@ class ExportTasksJob implements ShouldQueue
             ];
         }
 
-        // Ubah array ke string CSV
-        $csvString = '';
-        foreach ($csvData as $row) {
-            $csvString .= implode(',', array_map(fn($v) => '"' . $v . '"', $row)) . "\n";
-        }
+        // Ubah array ke CSV string
+        $csvString = collect($csvData)
+            ->map(fn($row) => implode(',', array_map(fn($v) => '"' . $v . '"', $row)))
+            ->implode("\n");
 
-        // Simpan ke storage/app/exports/
         Storage::disk('local')->put('exports/' . $this->fileName, $csvString);
     }
 }

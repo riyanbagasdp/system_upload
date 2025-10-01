@@ -35,7 +35,10 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/attachments/{id}/download', [AttachmentController::class, 'download'])->name('attachments.download');
     Route::delete('/attachments/{id}', [AttachmentController::class, 'destroy'])->name('attachments.destroy');
 
-    // ✅ Export
-    Route::post('/tasks/export', [TaskController::class, 'export'])->name('tasks.export');
-    Route::get('/tasks/export/{file}', [TaskController::class, 'downloadExport'])->name('tasks.export.download');
+    // ✅ Bulk Update Status
+    Route::post('/tasks/bulk-update-status', [TaskController::class, 'bulkUpdateStatus'])->name('tasks.bulkUpdate');
+
+    // ✅ Export Tasks
+    Route::post('/tasks/export', [TaskController::class, 'exportTasks'])->name('tasks.export');
+    Route::get('/tasks/export/download/{fileName}', [TaskController::class, 'downloadExport'])->name('tasks.export.download');
 });
